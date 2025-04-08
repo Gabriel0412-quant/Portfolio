@@ -1,16 +1,17 @@
 # Import library
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import yfinance as yf
 
-# Portfolio built
+# Portfolio built: in this case i am selecting manually the period range and the composing of portfolio
+# Using de yfinance for the downloads the data
 start_date = '2020-04-02'
+
 end_date = '2025-04-02'
 
-
 ativos = ['TCSA3.SA', 'LWSA3.SA', 'ENJU3.SA', 'BLAU3.SA']
+
 pesos = np.array([0.085, 0.654, 0.0934, 0.1442])
 
 cotacoes = yf.download(ativos, start=start_date, end=end_date, auto_adjust=False)['Adj Close']
@@ -60,3 +61,6 @@ vol_carteira
 vol_carteira_y = vol_carteira*np.sqrt(252)
 
 vol_carteira_y
+
+
+
