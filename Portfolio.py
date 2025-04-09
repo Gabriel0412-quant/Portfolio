@@ -18,7 +18,7 @@ cotacoes = yf.download(ativos, start=start_date, end=end_date, auto_adjust=False
 
 cotacoes
 
-# Calculated log returns
+# Calculated log returns and clearing de dataframe
 
 cotacoes_log_retorno = np.log(cotacoes/cotacoes.shift(1)).dropna()
 
@@ -30,15 +30,15 @@ retorno_acumulado = (1+cotacoes_log_retorno).cumprod()
 retorno_acumulado
 
 
-# Portfolio 
+# Adding the columns for the built de total renturn, result in portfolio day variation
 
 variação_carteira = (cotacoes_log_retorno*pesos).sum(axis=1)
 
 variação_carteira
 
-# Historical VaR
+# Historical VaR and plot histogram graph
 
-Var_hist_95 = np.percentile(variação_carteira, 1)
+Var_hist_95 = np.percentile(variação_carteira, 5)
 
 Var_hist_95*100
 
@@ -62,5 +62,59 @@ vol_carteira_y = vol_carteira*np.sqrt(252)
 
 vol_carteira_y
 
+# Calculate beta portfolio
 
+benchmark = yf.download("^BVSP", start=start_date, end=end_date)['Close']
+
+benchmark_log_renturs = np.log(benchmark/benchmark.shift(1)).dropna()
+
+benchmark_log_renturs
+
+uniao = pd.concat([benchmark_log_renturs, variação_carteira], axis=1).dropna()
+
+uniao.columns = ['IBOV', 'Carteira']
+
+import statsmodels.api as sm
+
+y = uniao['Carteira']
+x = uniao['IBOV']
+
+x = sm.add_constant(x)
+
+modelo = sm.OLS(y, x)
+
+resultado = modelo.fit()
+
+resultado.params[0]
+
+resultado.params[1]
+
+beta_carteira = resultado.params[1]
+
+beta_carteira
+
+beta_cov = np.cov(uniao['Carteira'], uniao['IBOV'])[0, 1]
+
+# Variância do mercado
+var_mercado = np.var(uniao['IBOV'], ddof=1)  # ddof=1 para amostra
+
+# Beta
+beta = beta_cov / var_mercado
+print(f'Beta da carteira: {beta:.4f}')
+
+# Parametrical VaR
+
+from scipy.stats import norm
+
+media = np.mean(variação_carteira)
+
+desvpad = vol_carteira
+
+para_VaR_95 = norm.ppf(1-0.99, media, desvpad)
+
+para_VaR_95*100
+
+para_VaR_95_y = np.sqrt(21)*para_VaR_95
+
+para_VaR_95_y
 
