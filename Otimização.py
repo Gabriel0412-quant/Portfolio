@@ -1,0 +1,1 @@
+# Fazer modelo de otimização de markovitz com calculo de CAPM como retorno e risco como vol EWMZ
