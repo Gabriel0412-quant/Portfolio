@@ -1,4 +1,4 @@
-
+# Study 
 import pandas as pd
 import numpy as np
 import yfinance as yf
@@ -31,9 +31,17 @@ cf_anualizado
 cf_anualizado_carteira = cf_anualizado.dot(pesos)
 cf_anualizado_carteira
 
+carteira_futuro_retornos = carteira_futuro.pct_change()
+carteira_futuro_retornos
 
+cov_fut = carteira_futuro_retornos.cov()
 
+cov_fut
 
+vol_fut_diaria = np.sqrt(np.dot(pesos.T, np.dot(cov_fut, pesos)))
 
+vol_fut_anual = vol_fut_diaria*np.sqrt(252)
+
+vol_fut_anual
 
 
