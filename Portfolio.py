@@ -36,6 +36,10 @@ variação_carteira = (cotacoes_log_retorno*pesos).sum(axis=1)
 
 variação_carteira
 
+retorno_acumulado_carteira = (retorno_acumulado*pesos).sum(axis=1)
+
+retorno_acumulado_carteira
+
 # Historical VaR and plot histogram graph
 
 Var_hist_95 = np.percentile(variação_carteira, 5)
@@ -74,6 +78,8 @@ uniao = pd.concat([benchmark_log_renturs, variação_carteira], axis=1).dropna()
 
 uniao.columns = ['IBOV', 'Carteira']
 
+uniao
+
 import statsmodels.api as sm
 
 y = uniao['Carteira']
@@ -94,6 +100,8 @@ beta_carteira = resultado.params[1]
 beta_carteira
 
 beta_cov = np.cov(uniao['Carteira'], uniao['IBOV'])[0, 1]
+
+beta_cov
 
 # Variância do mercado
 var_mercado = np.var(uniao['IBOV'], ddof=1)  # ddof=1 para amostra
@@ -117,4 +125,16 @@ para_VaR_95*100
 para_VaR_95_y = np.sqrt(21)*para_VaR_95
 
 para_VaR_95_y
+
+# Max Drawndown
+
+pico = retorno_acumulado_carteira.expanding(min_periods=1).max()
+
+pico
+
+dd = (retorno_acumulado_carteira/pico)-1
+
+drawndown = dd.min()
+
+drawndown
 
