@@ -164,3 +164,28 @@ ax.legend(title='Tipo de Portfólio', loc='upper right')
 plt.tight_layout()
 plt.show()
 
+
+
+# --- após calcular `weights`, `rets`, `vols`, etc. ---
+
+# 1) Preparar nomes
+m, n = weights.shape
+carteiras = [f"Carteira_{i}" for i in range(m)]
+ativos_sem_sa = [t.replace(".SA", "") for t in ativos]
+
+# 2) DataFrame de pesos
+df_pesos = pd.DataFrame(weights, index=carteiras, columns=ativos_sem_sa)
+
+# 3) Resumo de retorno e risco (opcional)
+df_resumo = pd.DataFrame({
+    "Retorno Anual (%)": rets * 100,
+    "Volatilidade Anual (%)": vols * 100,
+    "Alpha": alphas
+}, index=carteiras)
+
+# 4) Exportar tudo para Excel
+with pd.ExcelWriter("carteiras_otimas_EWMA.xlsx", engine="xlsxwriter") as writer:
+    df_pesos.to_excel(writer, sheet_name="Pesos Ótimos")
+    df_resumo.to_excel(writer, sheet_name="Resumo Fronteira")
+
+
