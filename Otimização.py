@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 import numpy as np
 from scipy.optimize import Bounds
 from scipy.optimize import minimize
+import xlsxwriter
 
 carteira_ibov = pd.read_csv('Dados\IBOVDia_10-04-25.csv', sep=';', decimal=',', encoding='latin-1')
 
@@ -248,3 +249,26 @@ fig.update_layout(
 )
 
 fig.show()
+
+
+Qtd_pontos_fronteira
+
+len(carteira_front)
+
+carteiras = ['Carteira_' + str(i) for i in range(Qtd_pontos_fronteira)]
+
+nome_ativos = close_adj_retornos.columns.str.replace('.SA', '', regex=False).tolist()
+
+df_carteiras = pd.DataFrame([], index=carteiras, columns=nome_ativos)
+
+df_carteiras
+
+for posição, carteira in enumerate(carteiras):
+    df_carteiras.loc[carteira] = carteira_front[posição].round(2)
+
+
+df_carteiras
+
+writer_portfolio = pd.ExcelWriter('carteiras_otimas.xlsx', engine='xlsxwriter')
+df_carteiras.to_excel(writer_portfolio, index=True, sheet_name='Carteiras Ótimas')
+writer_portfolio._save()
