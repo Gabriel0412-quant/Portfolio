@@ -6,7 +6,7 @@ import yfinance as yf
 from hmmlearn import hmm
 import matplotlib.pyplot as plt
 
-data = yf.download("^BVSP")
+data = yf.download("HYPE3.SA")
 returns = np.log(data.Close / data.Close.shift(1))
 range = (data.High - data.Low)
 features = pd.concat([returns, range], axis=1).dropna()
@@ -44,7 +44,7 @@ plt.show()
 
 
 # Exercício com volatilidade
-data = yf.download("^BVSP")
+data = yf.download("HYPE3.SA")
 
 # Calculando o desvio padrão dos retornos
 returns = np.log(data.Close / data.Close.shift(1))
