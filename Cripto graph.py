@@ -113,6 +113,52 @@ pesos = [0.4, 0.3, 0.3]
 fig = px.pie(pesos, values=pesos, names=tickers, title='Portfolio Allocation')
 fig.show()
 
+import investpy as ivp
+
+tickers = ['VALE3.SA', 'ALOS3.SA', 'MRVE3.SA']
+
+pesos = [0.4, 0.3, 0.3]
+
+marketcap_tickers = pd.DataFrame()
+
+for i in tickers:
+    df = ivp.get_stock_information(i, country='brazil')['Market Cap']
+    df.rename(i, inplace=True)
+    df.columns = [i]  # Fixed typo: 'collums' -> 'columns'
+    marketcap_tickers = pd.concat([marketcap_tickers, df], axis=1)
+
+
+marketcap_tickers.columns = tickers
+
+marketcap_tickers
+
+
+import investpy as ivp
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+tickers = ['VALE3.SA', 'ALOS3.SA', 'MRVE3.SA']
+pesos = [0.4, 0.3, 0.3]
+marketcap_tickers = pd.DataFrame()
+
+for i in tickers:
+    info = ivp.get_stock_information(i, country='brazil')
+    market_cap = info.loc['Market Cap']
+    df = pd.DataFrame({i: [market_cap]})
+    marketcap_tickers = pd.concat([marketcap_tickers, df], axis=1)
+
+print(marketcap_tickers)
+
+
+fig = go.Figure(go.bar(x=marketcap_tickers.iloc[-1], y=marketcap_tickers.columns[0], orientation = 'h'))
+fig.update_layout(title='Market Cap of Stocks')
+fig.show()
+
+
+
+
+
 
 
 
